@@ -74,14 +74,15 @@ def check_sha256(filename, expected_hash)
       sha256.update(buf)
     end
   end
-  return if sha256.hexdigest == expected_hash
+  next if sha256.hexdigest == expected_hash
 
   raise "bad sha256 checksum for #{filename} (expected #{expected_hash} got #{sha256.hexdigest})"
 end
 
 desc 'check for GEM_HOME'
 task :gem_home do
-  return unless ENV['GEM_HOME'].nil?
+  puts "check gem home"	
+  next unless ENV['GEM_HOME'].nil?
 
   puts 'setting local GEM_HOME and PATH'
   gem_dir = File.join(ENV['HOME'], ".gem/ruby/#{MRI_RUBY}")
@@ -91,7 +92,7 @@ task :gem_home do
     file << set_gem_home.result(binding)
   end
   # set GEM_HOME so we can use it in ruby script to install picrate
-  ENV['GEM_HOME'] = gem_dir
+  ENV['GEM_HOME'] ||= gem_dir
 end
 
 desc 'install gem'
